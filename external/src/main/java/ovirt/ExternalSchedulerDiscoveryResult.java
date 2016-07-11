@@ -1,3 +1,5 @@
+package ovirt;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -8,58 +10,103 @@ import org.slf4j.LoggerFactory;
 
 
 public class ExternalSchedulerDiscoveryResult {
-    private static final Logger log = LoggerFactory.getLogger(ExternalSchedulerDiscoveryResult.class);
-    private static final String FILTERS = "filters";
-    private static final String SCORES = "scores";
-    private static final String BALANCE = "balance";
-    private List<Object> filters;
-    private List<Object> scores;
-    private List<Object> balance;
+	private static final Logger log = LoggerFactory.getLogger(ExternalSchedulerDiscoveryResult.class);
+	private static final String FILTERS = "filters";
+	private static final String SCORES = "scores";
+	private static final String BALANCE = "balance";
+	private List<Object> filters;
+	private List<Object> scores;
+	private List<Object> balance;
 
-    ExternalSchedulerDiscoveryResult() {
-        filters = new LinkedList<>();
-        scores = new LinkedList<>();
-        balance = new LinkedList<>();
-    }
+	ExternalSchedulerDiscoveryResult() {
+		filters = new LinkedList<>();
+		scores = new LinkedList<>();
+		balance = new LinkedList<>();
+	}
 
-    public boolean populate(Object xmlRpcRawResult) {
-        return true;
-    }
+	public boolean populate(Object xmlRpcRawResult) {
+		System.out.println("populate() entered");
+		try {
+			if (!(xmlRpcRawResult instanceof HashMap)) {
+				log.error("External scheduler error, malformed discover results");
+				return false;
+			}
+			System.out.println("populate: is HashMap");
 
-    private List<Object> getRelevantList(String type) {
-        switch (type) {
-        case FILTERS:
-            return filters;
-        case SCORES:
-            return scores;
-        case BALANCE:
-            return balance;
-        default:
-            return null;
-        }
-    }
+			@SuppressWarnings("unchecked")
+			HashMap<String, HashMap<String, Object[]>> castedResult = (HashMap<String, HashMap<String, Object[]>>) xmlRpcRawResult;
 
-    List<Object> getFilters() {
-        return filters;
-    }
+			// keys will be filter, score and balance
+			for (Map.Entry<String, HashMap<String, Object[]>> entry : castedResult.entrySet()) {
+				String type = entry.getKey();
+				System.out.printf("type: %s\n", type);
 
-    void setFilters(List<Object> filters) {
-        this.filters = filters;
-    }
+				HashMap<String, Object[]> typeMap = entry.getValue();
+				//List<ExternalSchedulerDiscoveryUnit> currentList = getRelevantList(type);
+				List<Object> currentList = getRelevantList(type);
+				if (currentList == null) {
+					log.error("External scheduler error, got unknown type");
+					return false;
+				}
+				// list of module names as keys and [description, regex] as value
+				for (Map.Entry<String, Object[]> module: typeMap.entrySet()) {
+					String moduleName = module.getKey();
+					System.out.printf("\tmoduleName: %s\n", moduleName);
+/*
+					Object[] singleModule = module.getValue();
+					// check custom properties format.
+					String customPropertiesRegex = singleModule[1].toString();
+					if (!StringUtils.isEmpty(customPropertiesRegex) && SimpleCustomPropertiesUtil.getInstance().syntaxErrorInProperties(customPropertiesRegex)) {
+						log.error("Module '{}' will not be loaded, wrong custom properties format ({})", moduleName, customPropertiesRegex);
+						continue;
+					}
+					ExternalSchedulerDiscoveryUnit currentUnit = new ExternalSchedulerDiscoveryUnit(moduleName, singleModule[0].toString(), customPropertiesRegex);
+					currentList.add(currentUnit);
+*/
+				}
+			}
+			return true;
+		} catch (Exception e) {
+			log.error("External scheduler error, exception while parsing discovery results: {}", e.getMessage());
+			log.debug("Exception", e);
+			return false;
+		}
+	}
 
-    List<Object> getScores() {
-        return scores;
-    }
+	private List<Object> getRelevantList(String type) {
+		switch (type) {
+		case FILTERS:
+			return filters;
+		case SCORES:
+			return scores;
+		case BALANCE:
+			return balance;
+		default:
+			return null;
+		}
+	}
 
-    void setScores(List<Object> scores) {
-        this.scores = scores;
-    }
+	List<Object> getFilters() {
+		return filters;
+	}
 
-    List<Object> getBalance() {
-        return balance;
-    }
+	void setFilters(List<Object> filters) {
+		this.filters = filters;
+	}
 
-    void setBalance(List<Object> balance) {
-        this.balance = balance;
-    }
+	List<Object> getScores() {
+		return scores;
+	}
+
+	void setScores(List<Object> scores) {
+		this.scores = scores;
+	}
+
+	List<Object> getBalance() {
+		return balance;
+	}
+
+	void setBalance(List<Object> balance) {
+		this.balance = balance;
+	}
 }
