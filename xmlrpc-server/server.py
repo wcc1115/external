@@ -1,9 +1,9 @@
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 from SimpleXMLRPCServer import SimpleXMLRPCRequestHandler
 
-filters = {"f1":"None", "f2":"None", "f3":"None"};
-scores = {"s1":"None", "s2":"None", "s3":"None"};
-balances = {"b1":"None", "b2":"None", "b3":"None"};
+filters = {"f1":["df1", "rf1=1"], "f2":["df2", "rf2=2"], "f3":["df3", "rf3=3"]};
+scores = {"s1":["ds1", "rs1=1"], "s2":["ds2", "rs2=2"], "s3":["ds3", "rs3=3"]};
+balances = {"b1":["db1", "rb1=1"], "b2":["db3", "rb2=2"], "b3":["db3", "rb3=3"]};
 discover_result = {"filters":filters, "scores":scores, "balance":balances};
 
 class RequestHandler(SimpleXMLRPCRequestHandler):

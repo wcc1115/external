@@ -72,6 +72,7 @@ public class ExternalSchedulerBrokerImpl implements ExternalSchedulerBroker {
 		if (!retValue.populate(result)) {
 			return null;
 		}
+		System.out.println("polulate success, about to return a ExternalSchedulerDiscoverResult()");
 		return retValue;
 	}
 
