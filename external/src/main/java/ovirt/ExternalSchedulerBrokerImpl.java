@@ -81,7 +81,23 @@ public class ExternalSchedulerBrokerImpl implements ExternalSchedulerBroker {
 			List<Guid> hostIDs,
 			Guid vmID,
 			Map<String, String> propertiesMap) {
-	   return null;
+		try {
+			// Do not call the scheduler when there is no operation requested from it
+			if (filterNames.isEmpty()) {
+				return hostIDs;
+			}
+
+			XmlRpcClient client = new XmlRpcClient();
+			client.setConfig(config);
+			Object xmlRpcStruct = client.execute(FILTER, createFilterArgs(filterNames, hostIDs, vmID, propertiesMap));
+			return ExternalSchedulerBrokerObjectBuilder.getFilteringResult(xmlRpcStruct).getHosts();
+
+        	} catch (XmlRpcException e) {
+            		log.error("Error communicating with the external scheduler while filtering: {}", e.getMessage());
+            		log.debug("Exception", e);
+            		auditLogFailedToConnect();
+            		return hostIDs;
+        	}
 	}
 
 	private void auditLogFailedToConnect() {

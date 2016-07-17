@@ -4,6 +4,12 @@
 
 ## 进展
 
+- 2016-07-17
+    - 理解了以下过程:
+        - 外部调度器发现,固化,访问
+        - 外部过滤器RPC的方法,参数以及返回值
+    - runFilters()方法调试通过
+
 - 2016-07-16
     - *ExternalSchedulerDiscoveryResult*.populate()调试通过
     - *ExternalSchedulerBroker*.runDiscover()调试通过
@@ -23,12 +29,20 @@
 
 ### 近期计划
 
-- 跟踪外部调度单元固化过程
-- 跟踪外部调度单元访问过程
-- runFilters()/runScores()/runBalance()调试
+- runScores()和runBalance()方法调试
+- xml-rpc服务器重构
+- 着手上机实验
+    - 离线调度器上机实验
+    - 外部调度器配置:开关,RPC设置
+    - 简单的运行调试
+    - 算法调试
+
 
 ### 已完成计划
 
+- 跟踪外部调度单元固化过程
+- 跟踪外部调度单元访问过程
+- runFilters()调试
 - 引入以下类以完成对populate()的调试:
     - StringUtiles
     - SimpleCustomPropertiesUtil
@@ -36,21 +50,22 @@
 
 ### 总计划
 
-- 逐步引入并测试以下方法:
+- 逐步引入并测试以下方法(**基本完成**):
     - *ExternalSchedulerDiscoveryResult*.populate()
     - *ExternalSchedulerBrokerImpl*.{runFilters, runScores, runBalance}()
-- 外部调度策略的保存与使用过程
+- 外部调度策略的保存与使用过程(**已完成**):
 - 外部调度器的配置与ovirt插件
 
 ## 文件说明
 
-- external/ 外部调度器的工程目录, 使用maven3管理
-- xmlrpc-server/ xmlrpc服务器目录
-- README.md 项目说明文件
-- 
+- external/ : 外部调度器的工程目录, 使用maven3管理
+- xmlrpc-server/ : xmlrpc服务器目录
+- README.md :
+
 ## 笔记
 
 - org.apache.commons.lang -> org.apache.commons.lang3
 - 外部调度单单元
     - (名字,描述,属性),名字是键,[描述,属性]是值
     - 属性格式:key=value, 或者:key1=value1;key2=value2;...;keyn=valuen
+- runFilters返回值格式见服务器
