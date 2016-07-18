@@ -4,6 +4,12 @@
 
 ## 进展
 
+- 2016-07-18
+    - 了解了依赖注入和控制反转, 试图理解@Inject的工作过程但是失败了
+    - 了解了balance和filter & score的关系
+    - 了解了runBalance(), runFilters(), runScores()的调用栈
+        
+
 - 2016-07-17
     - 理解了以下过程:
         - 外部调度器发现,固化,访问
@@ -37,7 +43,6 @@
     - 简单的运行调试
     - 算法调试
 
-
 ### 已完成计划
 
 - 跟踪外部调度单元固化过程
@@ -61,11 +66,3 @@
 - external/ : 外部调度器的工程目录, 使用maven3管理
 - xmlrpc-server/ : xmlrpc服务器目录
 - README.md :
-
-## 笔记
-
-- org.apache.commons.lang -> org.apache.commons.lang3
-- 外部调度单单元
-    - (名字,描述,属性),名字是键,[描述,属性]是值
-    - 属性格式:key=value, 或者:key1=value1;key2=value2;...;keyn=valuen
-- runFilters返回值格式见服务器
