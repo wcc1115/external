@@ -129,7 +129,23 @@ public class ExternalSchedulerBrokerImpl implements ExternalSchedulerBroker {
 			List<Guid> hostIDs,
 			Guid vmID,
 			Map<String, String> propertiesMap) {
-		return null;
+		try {
+			// Do not call the scheduler when there is no operation requested from it
+			if (scoreNameAndWeight.isEmpty()) {
+				return null;
+			}
+
+			XmlRpcClient client = new XmlRpcClient();
+			client.setConfig(config);
+			Object result = client.execute(SCORE, createScoreArgs(scoreNameAndWeight, hostIDs, vmID, propertiesMap));
+			return ExternalSchedulerBrokerObjectBuilder.getScoreResult(result).getHosts();
+
+		} catch (XmlRpcException e) {
+			log.error("Error communicating with the external scheduler while running weight modules: {}",e.getMessage());
+			log.debug("Exception", e);
+			auditLogFailedToConnect();
+			return null;
+		}
 	}
 
 	private Object[] createScoreArgs(List<Pair<String, Integer>> scoreNameAndWeight,
@@ -162,7 +178,18 @@ public class ExternalSchedulerBrokerImpl implements ExternalSchedulerBroker {
 
 	@Override
 	public Pair<List<Guid>, Guid> runBalance(String balanceName, List<Guid> hostIDs, Map<String, String> propertiesMap) {
-		return null;
+		try {
+			XmlRpcClient client = new XmlRpcClient();
+			client.setConfig(config);
+			Object result = client.execute(BALANCE, createBalanceArgs(balanceName, hostIDs, propertiesMap));
+			return ExternalSchedulerBrokerObjectBuilder.getBalanceResults(result).getResult();
+
+		} catch (XmlRpcException e) {
+			log.error("Error communicating with the external scheduler while balancing: {}", e.getMessage());
+			log.debug("Exception", e);
+			auditLogFailedToConnect();
+			return null;
+		}
 	}
 
 	private Object[] createBalanceArgs(String balanceName, List<Guid> hostIDs, Map<String, String> propertiesMap) {
