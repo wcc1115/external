@@ -80,7 +80,7 @@ discover_result = {"filters":filters, "scores":scores, "balance":balances};
 class RequestHandler(SimpleXMLRPCRequestHandler):
 	rpc_paths = ('/RPC2');
 
-server = SimpleXMLRPCServer(("127.0.0.1", 8000), requestHandler = RequestHandler);
+server = SimpleXMLRPCServer(("localhost", 18781), requestHandler = RequestHandler);
 server.register_function(lambda x, y : x + y, 'add');
 server.register_function(lambda : discover_result, 'discover'); 
 server.register_function(run_filters, "runFilters");

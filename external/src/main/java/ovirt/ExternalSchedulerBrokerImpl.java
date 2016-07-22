@@ -28,7 +28,7 @@ public class ExternalSchedulerBrokerImpl implements ExternalSchedulerBroker {
 	private XmlRpcClientConfigImpl config = null;
 
 	public ExternalSchedulerBrokerImpl() {
-		String extSchedUrl = "http://127.0.0.1:8000";
+		String extSchedUrl = "http://localhost:18781";
 		config = new XmlRpcClientConfigImpl();
 		config.setEnabledForExtensions(true);
 		/* wish to be ms */
